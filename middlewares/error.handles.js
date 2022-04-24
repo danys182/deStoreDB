@@ -1,9 +1,21 @@
-const logger = require('./../utils/winston.createLogger');
+const logger = require('./../libs/winston.createLogger');
+const { ValidationError } = require('@sequelize/core');
 
 function errorHandler(err, req, res, next) {
-	logger.error(`${err.stack}`);
+	logger.error(`${err.name} - ${err.message} - ${err.stack}`);
+
 	return res.status(500).json({
-		message: err.message,
+		message: 'Error interno',
+		statusCode: 500,
+	});
+}
+
+function sequelizeErrorHandler(err, req, res, next) {
+	logger.error(`${err.name} - ${err.message} - ${err.stack}`);
+
+	return res.status(409).json({
+		message: err.name,
+		statusCode: 409,
 	});
 }
 
@@ -16,4 +28,4 @@ function boomErrorHandler(err, req, res, next) {
 	next(err);
 }
 
-module.exports = { errorHandler, boomErrorHandler };
+module.exports = { sequelizeErrorHandler, errorHandler, boomErrorHandler };

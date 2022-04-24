@@ -1,21 +1,25 @@
 const express = require('express');
 const router = express.Router();
 
-const validatorHandler = require('./../middlewares/validator.handler');
+const validatorHandler = require('../middlewares/validator.handler');
+const validatorEmailUnique = require('../middlewares/validator.email.unique.handler');
 const {
-	createProductSchema,
-	updateProductSchema,
-	getProductSchema,
-} = require('../schemas/products.schema');
+	createUserSchema,
+	updateUserSchema,
+	getUserSchema,
+	checkUserUniqueEmail,
+} = require('../schemas/user.schema');
 
-const ProductService = require('../services/product.service');
-const service = new ProductService();
 const UserService = require('../services/user.service');
-const serviceUser = new UserService();
+const service = new UserService();
+
+const select = {
+	exclude: ['updatedAt', 'createdAt'],
+};
 
 router.get('/', async (req, res, next) => {
 	try {
-		const products = await service.getAll();
+		const products = await service.getAll(select);
 		res.json(products);
 	} catch (error) {
 		next(error);
@@ -24,11 +28,11 @@ router.get('/', async (req, res, next) => {
 
 router.get(
 	'/:id',
-	validatorHandler(getProductSchema, 'params'),
+	validatorHandler(getUserSchema, 'params'),
 	async (req, res, next) => {
 		const { id } = req.params;
 		try {
-			const product = await service.getById(id);
+			const product = await service.getById(id, select);
 			res.json(product);
 		} catch (error) {
 			next(error);
@@ -38,7 +42,8 @@ router.get(
 
 router.post(
 	'/',
-	validatorHandler(createProductSchema, 'body'),
+	validatorHandler(createUserSchema, 'body'),
+	validatorEmailUnique(checkUserUniqueEmail),
 	async (req, res, next) => {
 		const body = req.body;
 
@@ -46,6 +51,7 @@ router.post(
 			const newProduct = await service.create(body);
 			res.json(newProduct);
 		} catch (error) {
+			console.error(error);
 			next(error);
 		}
 	}
@@ -53,8 +59,9 @@ router.post(
 
 router.patch(
 	'/:id',
-	validatorHandler(getProductSchema, 'params'),
-	validatorHandler(updateProductSchema, 'body'),
+	validatorHandler(getUserSchema, 'params'),
+	validatorHandler(updateUserSchema, 'body'),
+	//validatorEmailUnique(checkUserUniqueEmail),
 	async (req, res, next) => {
 		const { id } = req.params;
 		const body = req.body;
@@ -70,13 +77,12 @@ router.patch(
 
 router.delete(
 	'/:id',
-	validatorHandler(getProductSchema, 'params'),
+	validatorHandler(getUserSchema, 'params'),
 	async (req, res, next) => {
 		const { id } = req.params;
-
 		try {
-			const product = await service.delete(id);
-			res.json(product);
+			const result = await service.deleteById(id);
+			res.json(result ? id : 0);
 		} catch (error) {
 			next(error);
 		}

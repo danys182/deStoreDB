@@ -1,5 +1,6 @@
 const faker = require('faker');
 const boom = require('@hapi/boom');
+const sequelize = require('../libs/sequalize');
 
 class ProductsService {
 	#products = [];

@@ -13,6 +13,10 @@ const logger = createLogger({
 			filename: './error.log',
 			level: 'error',
 		}),
+		new transports.File({
+			filename: './debug.log',
+			level: 'debug',
+		}),
 	],
 });
 module.exports = logger;

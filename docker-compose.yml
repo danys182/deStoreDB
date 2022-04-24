@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB:deStore
+      - POSTGRES_USER:admin
+      - POSTGRES_PASSWORD:admin
+    ports:
+      - 5434:5432
+    volumes:
+      - ./data/postgres_data:/var/lib/postgresql/data
+
+  pg-admin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports: 
+      - 5050:80
+
+
+
+  mysql:
+    image: mysql:5
+    environment:
+      MSQL_DATABASE: deStore
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: admin
+      MSQL_PORT: 3306
+    ports: 
+      - 3306:3306
+    volumes:
+      - ./data/mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      PMA_HOST: mysql
+    ports:
+      - 8080:80

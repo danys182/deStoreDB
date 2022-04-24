@@ -1,11 +1,12 @@
 const express = require('express');
 const routerApi = require('./routers/index');
 const cors = require('cors');
-const logger = require('./utils/winston.createLogger');
+const logger = require('./libs/winston.createLogger');
 
 const {
 	errorHandler,
 	boomErrorHandler,
+	sequelizeErrorHandler,
 } = require('./middlewares/error.handles');
 
 const app = express();
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 routerApi(app);
 
 //Middleswares manejo de errores
+app.use(sequelizeErrorHandler);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
