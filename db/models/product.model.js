@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes, Model } = require('@sequelize/core');
 
-const USER_TABLE_NAME = 'users';
+const PRODUCT_TABLE_NAME = 'products';
 
-const UserSchema = {
+const ProductSchema = {
 	id: {
 		type: DataTypes.INTEGER,
 		autoIncrement: true,
@@ -26,6 +26,6 @@ const UserSchema = {
 	},
 };
 
-class User extends Model {}
+class Product extends Model {}
 
-module.exports = { User, USER_TABLE_NAME, UserSchema };
+module.exports = { Product, PRODUCT_TABLE_NAME, ProductSchema };
