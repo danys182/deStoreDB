@@ -31,6 +31,13 @@ const UserSchema = {
 	},
 };
 
-class User extends Model {}
+class User extends Model {
+	static associate(models) {
+		this.hasOne(models.Customer, {
+			as: 'customer',
+			foreignKey: 'userId',
+		});
+	}
+}
 
 module.exports = { User, USER_TABLE_NAME, UserSchema };

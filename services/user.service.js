@@ -3,64 +3,36 @@ const logger = require('./../libs/winston.createLogger');
 const { User: UserModel } = require('../db/models/user.model');
 
 class UserService {
-	#camposExcluidos = null;
-
-	camposExcluidos(campos) {
-		this.#camposExcluidos = campos;
+	async getAll(options = {}) {
+		return await UserModel.findAll(options);
 	}
 
-	async getAll(select, options = null) {
-		const user = await UserModel.findAll({ attributes: select });
-		return user;
-	}
-
-	async getById(id, select = null, options = null) {
-		console.log(options);
-		const user = await UserModel.findAll({
-			where: { id: id },
-			attributes: select,
-		});
-		if (!user.length) {
+	async findByPk(id, options = null) {
+		const user = await UserModel.findByPk(id, options);
+		if (!user) {
 			throw boom.notFound('User not found');
 		}
 		return user;
 	}
 
 	async create(data) {
-		const newUser = await UserModel.create(data);
-		return newUser;
+		return await UserModel.create(data);
 	}
 
 	async findOne(data, options) {
-		return await UserModel.findOne({
-			where: data,
-			rejectOnEmpty: options?.rejectOnEmpty,
-		});
+		return await UserModel.findOne(data);
 	}
 
-	async update(id, changes) {
-		await this.getById(id);
-		delete changes.id;
-		return await UserModel.update(changes, { where: { id: id } });
+	async update(id, changes, options = null) {
+		const user = await this.findByPk(id, options);
+		await user.update(changes);
+		return user;
 	}
 
-	async delete(data) {
-		await this.#destroy(data);
-	}
-
-	async deleteById(id) {
-		return await UserModel.destroy({ where: { id: id } });
-	}
-
-	async #destroy(data) {
-		const result = await this.findOne(data);
-
-		if (!result) {
-			throw boom.notFound('User not found');
-		}
-
-		await UserModel.destroy({ where: data });
-		return data;
+	async delete(id) {
+		const user = await this.findByPk(id);
+		await user.destroy();
+		return { id };
 	}
 }
 

@@ -11,19 +11,24 @@ function errorHandler(err, req, res, next) {
 }
 
 function sequelizeErrorHandler(err, req, res, next) {
-	logger.error(`${err.name} - ${err.message} - ${err.stack}`);
-
-	return res.status(409).json({
-		message: err.name,
-		statusCode: 409,
-	});
+	if (typeof err === ValidationError) {
+		return res.status(409).json({
+			message: err.name,
+			statusCode: 409,
+		});
+	} else {
+		logger.error(`${err.name} - ${err.message} - ${err.stack}`);
+	}
+	next(err);
 }
 
 function boomErrorHandler(err, req, res, next) {
 	if (err.isBoom) {
 		const { output } = err;
-		if (output.statusCode.toString().match(/^4/))
+		if (output.statusCode.toString().match(/^4/)) {
+			logger.debug(`${err.name} - ${err.message} - ${err.stack}`);
 			return res.status(output.statusCode).json(output.payload);
+		}
 	}
 	next(err);
 }

@@ -1,21 +1,25 @@
 const Joi = require('joi');
 const { Op } = require('@sequelize/core');
+const boom = require('@hapi/boom');
 
 const UserService = require('../services/user.service');
 const service = new UserService();
 
-const id = Joi.number();
+const id = Joi.number().integer();
 const email = Joi.string().email().required();
 const password = Joi.string();
+const role = Joi.string();
 
 const createUserSchema = Joi.object({
 	email: email,
 	password: password.required(),
+	role: role.required(),
 });
 
 const updateUserSchema = Joi.object({
 	email: email.optional(),
 	password: password.optional(),
+	role: role.optional(),
 });
 
 const getUserSchema = Joi.object({
@@ -24,17 +28,22 @@ const getUserSchema = Joi.object({
 
 const checkUserUniqueEmail = Joi.object({
 	id: id.optional(),
-	email: email.required(),
-}).external(async (obj, helpers) => {
-	const exist = await service.findOne({
-		id: { [Op.ne]: obj.id || null },
-		email: obj.email,
+	email: email.optional(),
+})
+	.unknown(true)
+	.external(async (obj, helpers) => {
+		if (obj.email) {
+			const exist = await service.findOne({
+				where: {
+					id: { [Op.ne]: obj.id || null },
+					email: obj.email,
+				},
+			});
+			if (exist) {
+				throw boom.badRequest('Email registrado');
+			}
+		}
 	});
-
-	if (exist) {
-		throw new Error('Email registrado');
-	}
-});
 
 module.exports = {
 	checkUserUniqueEmail,

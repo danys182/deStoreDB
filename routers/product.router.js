@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const validatorHandler = require('./../middlewares/validator.handler');
+const validatorHandler = require('../middlewares/validator.handler');
+const validatorRequestHandler = require('../middlewares/validator.request.handler');
 const {
+	checkProductUniqueName,
 	createProductSchema,
 	updateProductSchema,
 	getProductSchema,
@@ -10,12 +12,10 @@ const {
 
 const ProductService = require('../services/product.service');
 const service = new ProductService();
-const UserService = require('../services/user.service');
-const serviceUser = new UserService();
 
 router.get('/', async (req, res, next) => {
 	try {
-		const products = await service.getAll();
+		const products = await service.getAll({ include: ['category'] });
 		res.json(products);
 	} catch (error) {
 		next(error);
@@ -28,7 +28,7 @@ router.get(
 	async (req, res, next) => {
 		const { id } = req.params;
 		try {
-			const product = await service.getById(id);
+			const product = await service.findByPk(id);
 			res.json(product);
 		} catch (error) {
 			next(error);
@@ -39,6 +39,7 @@ router.get(
 router.post(
 	'/',
 	validatorHandler(createProductSchema, 'body'),
+	validatorRequestHandler(checkProductUniqueName),
 	async (req, res, next) => {
 		const body = req.body;
 
@@ -55,6 +56,7 @@ router.patch(
 	'/:id',
 	validatorHandler(getProductSchema, 'params'),
 	validatorHandler(updateProductSchema, 'body'),
+	validatorRequestHandler(checkProductUniqueName),
 	async (req, res, next) => {
 		const { id } = req.params;
 		const body = req.body;

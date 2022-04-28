@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const validatorHandler = require('../middlewares/validator.handler');
-const validatorEmailUnique = require('../middlewares/validator.email.unique.handler');
+const validatorRequestHandler = require('../middlewares/validator.request.handler');
 const {
 	createUserSchema,
 	updateUserSchema,
@@ -13,14 +13,16 @@ const {
 const UserService = require('../services/user.service');
 const service = new UserService();
 
-const select = {
-	exclude: ['updatedAt', 'createdAt'],
-};
-
 router.get('/', async (req, res, next) => {
 	try {
-		const products = await service.getAll(select);
-		res.json(products);
+		const user = await service.getAll({
+			include: [
+				{
+					association: 'customer',
+				},
+			],
+		});
+		res.json(user);
 	} catch (error) {
 		next(error);
 	}
@@ -32,8 +34,8 @@ router.get(
 	async (req, res, next) => {
 		const { id } = req.params;
 		try {
-			const product = await service.getById(id, select);
-			res.json(product);
+			const users = await service.findByPk(id);
+			res.json(users);
 		} catch (error) {
 			next(error);
 		}
@@ -43,13 +45,13 @@ router.get(
 router.post(
 	'/',
 	validatorHandler(createUserSchema, 'body'),
-	validatorEmailUnique(checkUserUniqueEmail),
+	validatorRequestHandler(checkUserUniqueEmail),
 	async (req, res, next) => {
 		const body = req.body;
 
 		try {
-			const newProduct = await service.create(body);
-			res.json(newProduct);
+			const user = await service.create(body);
+			res.json(user);
 		} catch (error) {
 			console.error(error);
 			next(error);
@@ -61,14 +63,14 @@ router.patch(
 	'/:id',
 	validatorHandler(getUserSchema, 'params'),
 	validatorHandler(updateUserSchema, 'body'),
-	//validatorEmailUnique(checkUserUniqueEmail),
+	validatorRequestHandler(checkUserUniqueEmail),
 	async (req, res, next) => {
 		const { id } = req.params;
 		const body = req.body;
 
 		try {
-			const newProduct = await service.update(id, body);
-			res.json(newProduct);
+			const user = await service.update(id, body);
+			res.json(user);
 		} catch (error) {
 			next(error);
 		}
@@ -81,8 +83,8 @@ router.delete(
 	async (req, res, next) => {
 		const { id } = req.params;
 		try {
-			const result = await service.deleteById(id);
-			res.json(result ? id : 0);
+			const result = await service.delete(id);
+			res.json(result);
 		} catch (error) {
 			next(error);
 		}
