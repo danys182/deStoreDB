@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const whitelist = ['http://myd.com/'];
+const whitelist = [];
 var corsOptions = {
 	origin: function (origin, callback) {
 		if (whitelist.includes(origin) || !origin) {

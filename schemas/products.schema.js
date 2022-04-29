@@ -46,7 +46,12 @@ const checkProductUniqueName = Joi.object({
 		}
 	});
 
-const queryProducts = paginationQuerySchema;
+const queryProducts = Joi.object({
+	price: price.optional(),
+	price_min: Joi.number().optional(),
+	price_max: Joi.number().optional(),
+	...paginationQuerySchema,
+});
 
 module.exports = {
 	checkProductUniqueName,
