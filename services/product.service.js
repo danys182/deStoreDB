@@ -5,6 +5,10 @@ const { Product: ProductModel } = require('./../db/models/product.model');
 
 class ProductsService {
 	async getAll(options = {}) {
+		options.include = ['category'];
+		options.limit = +options.limit || null;
+		options.offset = +options.offset || null;
+
 		return await ProductModel.findAll(options);
 	}
 

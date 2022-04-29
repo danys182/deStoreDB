@@ -8,19 +8,24 @@ const {
 	createProductSchema,
 	updateProductSchema,
 	getProductSchema,
+	queryProducts,
 } = require('../schemas/products.schema');
 
 const ProductService = require('../services/product.service');
 const service = new ProductService();
 
-router.get('/', async (req, res, next) => {
-	try {
-		const products = await service.getAll({ include: ['category'] });
-		res.json(products);
-	} catch (error) {
-		next(error);
+router.get(
+	'/',
+	validatorHandler(queryProducts, 'query'),
+	async (req, res, next) => {
+		try {
+			const products = await service.getAll(req.query);
+			res.json(products);
+		} catch (error) {
+			next(error);
+		}
 	}
-});
+);
 
 router.get(
 	'/:id',

@@ -1,6 +1,8 @@
 const Joi = require('joi');
 const { Op } = require('@sequelize/core');
+const { paginationQuerySchema } = require('./pagination.schema');
 const ProductService = require('../services/product.service');
+
 const service = new ProductService();
 
 const id = Joi.number().integer();
@@ -44,9 +46,12 @@ const checkProductUniqueName = Joi.object({
 		}
 	});
 
+const queryProducts = paginationQuerySchema;
+
 module.exports = {
 	checkProductUniqueName,
 	createProductSchema,
 	updateProductSchema,
 	getProductSchema,
+	queryProducts,
 };
