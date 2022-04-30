@@ -13,13 +13,10 @@ const ProductSchema = {
 		field: 'category_id',
 		allowNull: false,
 		type: DataTypes.INTEGER,
-		unique: false,
 		references: {
 			model: CATEGORY_TABLE_NAME,
 			key: 'id',
 		},
-		onUpdate: 'CASCADE',
-		onDelete: 'SET NULL',
 	},
 	name: {
 		type: DataTypes.STRING,

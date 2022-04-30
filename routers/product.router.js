@@ -47,7 +47,6 @@ router.post(
 	validatorRequestHandler(checkProductUniqueName),
 	async (req, res, next) => {
 		const body = req.body;
-
 		try {
 			const newProduct = await service.create(body);
 			res.json(newProduct);

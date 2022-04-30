@@ -3,12 +3,13 @@ const logger = require('../libs/winston.createLogger');
 const { Category: CategoryModel } = require('../db/models/category.model');
 
 class CategoryService {
-	async getAll(options = {}) {
-		return await CategoryModel.findAll(options);
+	#defaultOptions = { include: ['products'] };
+	async getAll() {
+		return await CategoryModel.findAll(this.#defaultOptions);
 	}
 
-	async findByPk(id, options = null) {
-		const category = await CategoryModel.findByPk(id, options);
+	async findByPk(id) {
+		const category = await CategoryModel.findByPk(id, this.#defaultOptions);
 		if (!category) {
 			throw boom.notFound('Category not found');
 		}
@@ -24,7 +25,7 @@ class CategoryService {
 	}
 
 	async update(id, changes, options = null) {
-		const category = await this.findByPk(id, options);
+		const category = await this.findByPk(id);
 		await category.update(changes);
 		return category;
 	}

@@ -2,7 +2,6 @@ const Joi = require('joi');
 const { Op } = require('@sequelize/core');
 const { paginationQuerySchema } = require('./pagination.schema');
 const ProductService = require('../services/product.service');
-
 const service = new ProductService();
 
 const id = Joi.number().integer();
@@ -32,7 +31,7 @@ const checkProductUniqueName = Joi.object({
 })
 	.unknown(true)
 	.external(async (obj, helpers) => {
-		if (obj.email) {
+		if (obj.name) {
 			const exist = await service.findOne({
 				where: {
 					id: { [Op.ne]: obj.id || null },
@@ -41,7 +40,7 @@ const checkProductUniqueName = Joi.object({
 			});
 
 			if (exist) {
-				throw new Error('Producto registrado');
+				throw new Error('Nombre de producto repetido');
 			}
 		}
 	});

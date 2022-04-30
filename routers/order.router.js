@@ -14,32 +14,11 @@ const service = new OrderService();
 const CustomerService = require('../services/customer.service');
 const serviceCustomer = new CustomerService();
 
-const selectOutput = {
-	attributes: ['id', 'total'],
-	include: [
-		{
-			association: 'customer',
-			attributes: ['id', 'name', 'lastName'],
-		},
-		{
-			association: 'items',
-			include: {
-				association: 'product',
-				attributes: ['id', 'name'],
-				include: [
-					{
-						association: 'category',
-						attributes: ['id', 'name'],
-					},
-				],
-			},
-		},
-	],
-};
+const selectOutput = {};
 
 router.get('/', async (req, res, next) => {
 	try {
-		const order = await service.getAll(selectOutput);
+		const order = await service.getAll();
 		res.json(order);
 	} catch (error) {
 		next(error);

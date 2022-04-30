@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const validatorHandler = require('../middlewares/validator.handler');
+const validatorRequestHandler = require('../middlewares/validator.request.handler');
 const {
+	checkRegisteredUser,
 	createCustomerSchema,
 	updateCustomerSchema,
 	getCustomerSchema,
@@ -12,7 +14,7 @@ const service = new CustomerService();
 
 router.get('/', async (req, res, next) => {
 	try {
-		const customer = await service.getAll({ include: ['user'] });
+		const customer = await service.getAll();
 		res.json(customer);
 	} catch (error) {
 		next(error);
@@ -36,6 +38,7 @@ router.get(
 router.post(
 	'/',
 	validatorHandler(createCustomerSchema, 'body'),
+	validatorRequestHandler(checkRegisteredUser),
 	async (req, res, next) => {
 		const body = req.body;
 

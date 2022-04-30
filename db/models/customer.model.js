@@ -19,8 +19,6 @@ const CustomerSchema = {
 			model: USER_TABLE_NAME,
 			key: 'id',
 		},
-		onUpdate: 'CASCADE',
-		onDelete: 'SET NULL',
 	},
 	name: {
 		type: DataTypes.STRING,

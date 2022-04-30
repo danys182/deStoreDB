@@ -3,12 +3,16 @@ const logger = require('./../libs/winston.createLogger');
 const { User: UserModel } = require('../db/models/user.model');
 
 class UserService {
-	async getAll(options = {}) {
-		return await UserModel.findAll(options);
+	#defaultOptions = {
+		include: ['customer'],
+	};
+
+	async getAll() {
+		return await UserModel.findAll(this.#defaultOptions);
 	}
 
-	async findByPk(id, options = null) {
-		const user = await UserModel.findByPk(id, options);
+	async findByPk(id) {
+		const user = await UserModel.findByPk(id, this.#defaultOptions);
 		if (!user) {
 			throw boom.notFound('User not found');
 		}
@@ -19,12 +23,12 @@ class UserService {
 		return await UserModel.create(data);
 	}
 
-	async findOne(data, options) {
-		return await UserModel.findOne(data);
+	async findOne(data) {
+		return await UserModel.findOne(data, this.#defaultOptions);
 	}
 
-	async update(id, changes, options = null) {
-		const user = await this.findByPk(id, options);
+	async update(id, changes) {
+		const user = await this.findByPk(id, this.#defaultOptions);
 		await user.update(changes);
 		return user;
 	}

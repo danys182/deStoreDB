@@ -15,13 +15,7 @@ const service = new UserService();
 
 router.get('/', async (req, res, next) => {
 	try {
-		const user = await service.getAll({
-			include: [
-				{
-					association: 'customer',
-				},
-			],
-		});
+		const user = await service.getAll();
 		res.json(user);
 	} catch (error) {
 		next(error);

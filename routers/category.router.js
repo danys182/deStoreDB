@@ -14,7 +14,7 @@ const service = new CategoryService();
 
 router.get('/', async (req, res, next) => {
 	try {
-		const category = await service.getAll({ include: ['products'] });
+		const category = await service.getAll();
 		res.json(category);
 	} catch (error) {
 		next(error);

@@ -19,6 +19,12 @@ const OrderSchema = {
 			key: 'id',
 		},
 	},
+	createdAt: {
+		type: DataTypes.DATE,
+		allowNull: false,
+		field: 'created_at',
+		defaultValue: DataTypes.NOW,
+	},
 	total: {
 		type: DataTypes.VIRTUAL,
 		get() {
@@ -34,7 +40,6 @@ const OrderSchema = {
 
 class Order extends Model {
 	static associate(models) {
-		console.log(models);
 		this.belongsTo(models.Customer, {
 			as: 'customer',
 		});

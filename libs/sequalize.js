@@ -25,6 +25,7 @@ const sequelize = new Sequelize(
 					return (attr.attributes.exclude = [
 						'createdAt',
 						'updateAt',
+						'password',
 					]);
 				});
 			},

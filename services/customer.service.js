@@ -3,12 +3,16 @@ const logger = require('../libs/winston.createLogger');
 const { Customer: CustomerModel } = require('../db/models/customer.model');
 
 class CustomerService {
+	#defaultOptions = {
+		include: [{ association: 'user', attributes: ['id', 'email'] }],
+	};
+
 	async getAll(options = {}) {
-		return await CustomerModel.findAll(options);
+		return await CustomerModel.findAll(this.#defaultOptions);
 	}
 
-	async findByPk(id, options = null) {
-		const customer = await CustomerModel.findByPk(id, options);
+	async findByPk(id) {
+		const customer = await CustomerModel.findByPk(id, { include: 'user' });
 		if (!customer) {
 			throw boom.notFound('Customer not found');
 		}
