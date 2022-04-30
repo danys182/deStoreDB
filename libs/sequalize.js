@@ -7,8 +7,11 @@ const setUpModels = require('../db/models/index');
 const sequelize = new Sequelize(config.dbUrl, {
 	dialect: 'mysql',
 	logging: (msg) => logger.debug(msg),
-	ssl: {
-		rejectUnauthorized: false,
+	dialectOptions: {
+		ssl: {
+			/* <----- Add SSL option */ require: true,
+			rejectUnauthorized: false,
+		},
 	},
 	hooks: {
 		beforeFind: (instance, options) => {
