@@ -2,7 +2,7 @@ const express = require('express');
 const routerApi = require('./routers/index');
 const cors = require('cors');
 const logger = require('./libs/winston.createLogger');
-
+require('./utils/auth');
 const {
 	errorHandler,
 	boomErrorHandler,
