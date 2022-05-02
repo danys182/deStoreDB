@@ -19,6 +19,10 @@ class UserService {
 		return user;
 	}
 
+	async findByEmail(email) {
+		return await UserModel.findOne({ where: { email } });
+	}
+
 	async create(data) {
 		return await UserModel.create(data);
 	}
