@@ -5,8 +5,8 @@ const config = {
 	isProd: process.env.NODE_ENV === 'production',
 	port: process.env.PORT || 3000,
 	dbUrl: process.env.DATABASE_URL,
-	apiKey: proccess.env.API_KEY,
-	jwtSecret: proccess.env.SECRET_KEY,
+	apiKey: process.env.API_KEY,
+	jwtSecret: process.env.SECRET_KEY,
 };
 
 module.exports = { config };
