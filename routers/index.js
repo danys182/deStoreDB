@@ -7,7 +7,7 @@ const customerRouter = require('./customer.router');
 const categoryRouter = require('./category.router');
 const orderRouter = require('./order.router');
 const orderItemRouter = require('./order-item.router');
-
+const authRouter = require('./auth.router');
 function routerApi(app) {
 	const router = express.Router();
 
@@ -19,6 +19,8 @@ function routerApi(app) {
 	router.use('/categories', categoryRouter);
 	router.use('/orders/items', orderItemRouter);
 	router.use('/orders', orderRouter);
+
+	router.use('/auth', authRouter);
 
 	router.use((req, res, next) => {
 		logger.http('URL not found: ' + req.url);
