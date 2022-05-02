@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 const validatorHandler = require('../middlewares/validator.handler');
 const validatorRequestHandler = require('../middlewares/validator.request.handler');
@@ -37,6 +38,7 @@ router.get(
 
 router.post(
 	'/',
+	passport.authenticate('jwt', { session: false }),
 	validatorHandler(createCategorySchema, 'body'),
 	validatorRequestHandler(checkUniqueName),
 	async (req, res, next) => {
