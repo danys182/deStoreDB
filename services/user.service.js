@@ -1,4 +1,5 @@
 const boom = require('@hapi/boom');
+const bcrypt = require('bcrypt');
 const logger = require('./../libs/winston.createLogger');
 const { User: UserModel } = require('../db/models/user.model');
 
@@ -24,7 +25,10 @@ class UserService {
 	}
 
 	async create(data) {
-		return await UserModel.create(data);
+		const hash = bcrypt.hash(data.password, 10);
+		const user = await UserModel.create({ ...data, password: hash });
+		delete user.password;
+		return user;
 	}
 
 	async findOne(data) {
@@ -33,7 +37,9 @@ class UserService {
 
 	async update(id, changes) {
 		const user = await this.findByPk(id, this.#defaultOptions);
-		await user.update(changes);
+		const hash = await bcrypt.hash(changes.password, 10);
+		await user.update({ ...changes, password: hash });
+		delete user.password;
 		return user;
 	}
 
