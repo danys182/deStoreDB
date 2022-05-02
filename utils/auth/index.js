@@ -1,5 +1,6 @@
 const passport = require('passport');
 
-const LocalStrategy = require('./strategies/local.strategy');
-
-passport.use(LocalStrategy);
+const localStrategy = require('./strategies/local.strategy');
+const jwtStrategy = require('./strategies/jwt.strategy');
+passport.use(localStrategy);
+passport.use(jwtStrategy);
