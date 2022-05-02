@@ -9,7 +9,6 @@ const sequelize = new Sequelize(config.dbUrl, {
 	logging: (msg) => logger.debug(msg),
 	dialectOptions: {
 		ssl: {
-			/* <----- Add SSL option */ require: true,
 			rejectUnauthorized: false,
 		},
 	},
