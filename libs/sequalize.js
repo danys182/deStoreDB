@@ -12,24 +12,6 @@ const sequelize = new Sequelize(config.dbUrl, {
 			rejectUnauthorized: false,
 		},
 	},
-	hooks: {
-		beforeFind: (instance, options) => {
-			if (!instance.attributes) {
-				instance.attributes = {};
-			}
-			instance.attributes.exclude = ['createdAt', 'updateAt'];
-			instance.include?.map((attr) => {
-				if (!attr.attributes) {
-					attr.attributes = {};
-				}
-				return (attr.attributes.exclude = [
-					'createdAt',
-					'updateAt',
-					'password',
-				]);
-			});
-		},
-	},
 });
 
 setUpModels(sequelize);
