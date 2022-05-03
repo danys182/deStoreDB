@@ -10,6 +10,7 @@ class OrderService {
 			{
 				association: 'customer',
 				attributes: ['id', 'name', 'lastName'],
+				include: ['user'],
 			},
 			{
 				association: 'items',
@@ -33,6 +34,38 @@ class OrderService {
 
 	async findByPk(id, options = null) {
 		const order = await OrderModel.findByPk(id, options);
+		if (!order) {
+			throw boom.notFound('Order not found');
+		}
+		return order;
+	}
+
+	async findByUserId(userId) {
+		const order = await OrderModel.findAll({
+			where: {
+				'$customer.user.id$': userId,
+			},
+
+			attributes: ['id', 'total'],
+
+			include: [
+				{
+					association: 'customer',
+					attributes: ['name', 'lastName'],
+					include: {
+						association: 'user',
+						attributes: ['id', 'email'],
+					},
+				},
+				{
+					association: 'items',
+					include: {
+						association: 'product',
+						attributes: ['id', 'name'],
+					},
+				},
+			],
+		});
 		if (!order) {
 			throw boom.notFound('Order not found');
 		}
