@@ -1,9 +1,9 @@
 const boom = require('@hapi/boom');
 
-function restrictToHandler(roles) {
+function restrictTo(roles) {
 	return (req, res, next) => {
 		const userRole = req.user?.role;
-		console.log(userRole), roles;
+		console.log(userRole, roles);
 		const hasRole = roles.includes(userRole);
 		if (hasRole) return next();
 
@@ -11,4 +11,4 @@ function restrictToHandler(roles) {
 	};
 }
 
-module.exports = restrictToHandler;
+module.exports = restrictTo;

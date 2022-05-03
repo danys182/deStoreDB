@@ -1,5 +1,7 @@
 const express = require('express');
 const boom = require('@hapi/boom');
+const passport = require('passport');
+const restrictTo = require('../middlewares/restrict.to.handler');
 const logger = require('./../libs/winston.createLogger');
 const productsRouter = require('./product.router');
 const usersRouter = require('./user.router');
@@ -13,12 +15,41 @@ function routerApi(app) {
 
 	app.use('/api/v1', router);
 
-	router.use('/products', productsRouter);
-	router.use('/users', usersRouter);
-	router.use('/customers', customerRouter);
-	router.use('/categories', categoryRouter);
-	router.use('/orders/items', orderItemRouter);
-	router.use('/orders', orderRouter);
+	router.use(
+		'/products',
+		passport.authenticate('jwt', { session: false }),
+		restrictTo(['admin']),
+		productsRouter
+	);
+	router.use(
+		'/users',
+		passport.authenticate('jwt', { session: false }),
+		usersRouter
+	);
+	router.use(
+		'/customers',
+		passport.authenticate('jwt', { session: false }),
+		restrictTo(['customer']),
+		customerRouter
+	);
+	router.use(
+		'/categories',
+		passport.authenticate('jwt', { session: false }),
+		restrictTo(['admin']),
+		categoryRouter
+	);
+	router.use(
+		'/orders/items',
+		passport.authenticate('jwt', { session: false }),
+		restrictTo(['customer', 'admin']),
+		orderItemRouter
+	);
+	router.use(
+		'/orders',
+		passport.authenticate('jwt', { session: false }),
+		restrictTo(['customer', 'admin']),
+		orderRouter
+	);
 
 	router.use('/auth', authRouter);
 
