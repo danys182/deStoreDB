@@ -10,6 +10,7 @@ const categoryRouter = require('./category.router');
 const orderRouter = require('./order.router');
 const orderItemRouter = require('./order-item.router');
 const authRouter = require('./auth.router');
+const orderMyRouter = require('./order-my.router');
 function routerApi(app) {
 	const router = express.Router();
 
@@ -38,6 +39,13 @@ function routerApi(app) {
 		restrictTo(['admin']),
 		categoryRouter
 	);
+
+	router.use(
+		'/orders/my',
+		passport.authenticate('jwt', { session: false }),
+		orderMyRouter
+	);
+
 	router.use(
 		'/orders/items',
 		passport.authenticate('jwt', { session: false }),

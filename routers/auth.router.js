@@ -1,8 +1,7 @@
 const express = require('express');
 const passport = require('passport');
-var jwt = require('jsonwebtoken');
-const { config } = require('./../config/config');
-
+const AuthService = require('./../services/auth.service');
+const service = new AuthService();
 const router = express.Router();
 
 router.get(
@@ -10,13 +9,7 @@ router.get(
 	passport.authenticate('local', { session: false }),
 	async (req, res, next) => {
 		try {
-			const user = req.user;
-			console.log(user);
-			const token = jwt.sign(
-				{ userId: user.id, role: user.role },
-				config.jwtSecret
-			);
-			res.json({ user, token });
+			res.json(service.signToken(req.user));
 		} catch (error) {
 			next(error);
 		}
