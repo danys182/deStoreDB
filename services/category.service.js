@@ -1,5 +1,4 @@
 const boom = require('@hapi/boom');
-const nodemailer = require('nodemailer');
 const { Category: CategoryModel } = require('../db/models/category.model');
 
 class CategoryService {
