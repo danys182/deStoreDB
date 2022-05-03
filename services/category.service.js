@@ -1,5 +1,5 @@
 const boom = require('@hapi/boom');
-const logger = require('../libs/winston.createLogger');
+const nodemailer = require('nodemailer');
 const { Category: CategoryModel } = require('../db/models/category.model');
 
 class CategoryService {
