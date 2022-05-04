@@ -38,7 +38,8 @@ class UserService {
 	async update(id, changes) {
 		const user = await this.findByPk(id, this.#defaultOptions);
 		await user.update(changes);
-		delete user.password;
+		delete user.dataValues.password;
+		delete user.dataValues.recoveryToken;
 		return user;
 	}
 
