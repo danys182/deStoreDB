@@ -5,8 +5,12 @@ const authService = new AuthService();
 const LocalStrategy = new Strategy(
 	{ usernameField: 'email' },
 	async (username, password, done) => {
-		const user = await authService.findByEmail(username, password);
-		done(null, user);
+		try {
+			const user = await authService.findByEmail(username, password);
+			done(null, user);
+		} catch (error) {
+			done(error, false);
+		}
 	}
 );
 
