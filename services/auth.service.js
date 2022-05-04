@@ -1,5 +1,6 @@
 const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 const { config } = require('./../config/config');
 var jwt = require('jsonwebtoken');
 const UserService = require('../services/user.service');
@@ -29,13 +30,29 @@ class AuthService {
 		return { user, token };
 	}
 
-	async sendMail(email) {
-		const user = service.findByEmail(email);
+	async emailRecoveryPassword(email) {
+		const user = await service.findByEmail(email);
 		if (!user) {
 			throw boom.unauthorized();
 		}
+
+		const token = jwt.sign({ sub: user.id }, config.jwtSecret, {
+			expiresIn: '15min',
+		});
+		const link = `http://frontend.com/token/${token}`;
+		const info = {
+			from: `deStore" <${config.emailUser}>`,
+			to: `${user.email}`,
+			subject: 'Recuperar contraseña',
+			html: `<p><b>deStore</b><br />Haz click en el link para recuprar contraseña</p><p>${link}</p>`,
+		};
+		const rts = this.sendMail(info);
+		return rts;
+	}
+
+	async sendMail(info) {
 		let transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.email',
+			host: 'smtp.gmail.com',
 			port: 465,
 			secure: true,
 			auth: {
@@ -44,13 +61,9 @@ class AuthService {
 			},
 		});
 
-		let info = await transporter.sendMail({
-			from: `Fred Foo 👻" <${config.emailUser}>`,
-			to: `${user.email}`,
-			subject: 'Hello ✔',
-			text: 'Hello world?',
-			html: '<b>Hello world?</b>',
-		});
+		await transporter.sendMail(info);
+
+		return { message: 'Email sent' };
 	}
 }
 
