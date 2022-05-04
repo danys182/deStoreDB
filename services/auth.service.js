@@ -42,7 +42,7 @@ class AuthService {
 		});
 		const link = `http://frontend.com/token/${token}`;
 
-		await user.update({ recovery_token: token });
+		const urser = await service.update(user.id, { recoveryToken: token });
 
 		const info = {
 			from: `deStore" <${config.emailUser}>`,
@@ -52,6 +52,28 @@ class AuthService {
 		};
 		const rts = this.sendMail(info);
 		return rts;
+	}
+
+	async changePassword(token, newPassword) {
+		try {
+			const payload = jwt.verify(token, config.jwtSecretRecovery);
+
+			const user = await service.findByPk(payload.sub);
+
+			if (user.recoveryToken !== token) {
+				throw boom.unauthorized();
+			}
+			const hash = await bcrypt.hash(newPassword, 10);
+
+			await service.update(user.id, {
+				recoveryToken: null,
+				password: hash,
+			});
+
+			return { message: 'Password chaged' };
+		} catch (error) {
+			throw boom.unauthorized();
+		}
 	}
 
 	async sendMail(info) {
