@@ -37,8 +37,7 @@ class UserService {
 
 	async update(id, changes) {
 		const user = await this.findByPk(id, this.#defaultOptions);
-		const hash = await bcrypt.hash(changes.password, 10);
-		await user.update({ ...changes, password: hash });
+		await user.update(changes);
 		delete user.password;
 		return user;
 	}
