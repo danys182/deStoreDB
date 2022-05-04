@@ -19,6 +19,7 @@ class AuthService {
 			throw boom.unauthorized();
 		}
 		delete user.dataValues.password;
+		delete user.dataValues.recoveryToken;
 		return user;
 	}
 
@@ -36,7 +37,7 @@ class AuthService {
 			throw boom.unauthorized();
 		}
 
-		const token = jwt.sign({ sub: user.id }, config.jwtSecret, {
+		const token = jwt.sign({ sub: user.id }, config.jwtSecretRecovery, {
 			expiresIn: '15min',
 		});
 		const link = `http://frontend.com/token/${token}`;
