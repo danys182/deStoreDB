@@ -45,7 +45,7 @@ router.post(
 
 		try {
 			const user = await service.create(body);
-			res.json(user);
+			res.status(201).json(user);
 		} catch (error) {
 			console.error(error);
 			next(error);

@@ -47,7 +47,7 @@ router.post(
 			await serviceCustomer.findByPk(body.customerId);
 
 			const order = await service.create(body);
-			res.json(order);
+			res.status(201).json(order);
 		} catch (error) {
 			console.error(error);
 			next(error);

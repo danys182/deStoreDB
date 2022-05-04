@@ -39,7 +39,7 @@ router.post(
 
 		try {
 			const orderItem = await service.create(body);
-			res.json(orderItem);
+			res.status(201).json(orderItem);
 		} catch (error) {
 			console.error(error);
 			next(error);

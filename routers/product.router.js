@@ -49,7 +49,7 @@ router.post(
 		const body = req.body;
 		try {
 			const newProduct = await service.create(body);
-			res.json(newProduct);
+			res.status(201).json(newProduct);
 		} catch (error) {
 			next(error);
 		}
