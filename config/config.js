@@ -9,6 +9,7 @@ const config = {
 	jwtSecret: process.env.JWT_SECRET,
 	emailUser: process.env.EMAIL_USER,
 	emailPassword: process.env.EMAIL_PASSWORD,
+	jwtSecretRecovery: process.env.JWT_SECRET_RECOVERY,
 };
 
 module.exports = { config };
