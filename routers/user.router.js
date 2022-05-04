@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const restrictTo = require('../middlewares/restrict.to.handler');
 const validatorHandler = require('../middlewares/validator.handler');
 const validatorRequestHandler = require('../middlewares/validator.request.handler');
 const {

@@ -5,11 +5,13 @@ const { User: UserModel } = require('../db/models/user.model');
 
 class UserService {
 	#defaultOptions = {
+		attributes: ['id', 'email', 'role'],
 		include: ['customer'],
 	};
 
 	async getAll() {
-		return await UserModel.findAll(this.#defaultOptions);
+		const users = UserModel.findAll(this.#defaultOptions);
+		return await users;
 	}
 
 	async findByPk(id) {
@@ -25,9 +27,9 @@ class UserService {
 	}
 
 	async create(data) {
-		const hash = bcrypt.hash(data.password, 10);
+		const hash = await bcrypt.hash(data.password, 10);
 		const user = await UserModel.create({ ...data, password: hash });
-		delete user.password;
+		delete user.dataValues.password;
 		return user;
 	}
 

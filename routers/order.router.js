@@ -14,8 +14,6 @@ const service = new OrderService();
 const CustomerService = require('../services/customer.service');
 const serviceCustomer = new CustomerService();
 
-const selectOutput = {};
-
 router.get('/', async (req, res, next) => {
 	try {
 		const order = await service.getAll();
@@ -31,7 +29,7 @@ router.get(
 	async (req, res, next) => {
 		const { id } = req.params;
 		try {
-			const order = await service.findByPk(id, selectOutput);
+			const order = await service.findByPk(id);
 			res.json(order);
 		} catch (error) {
 			next(error);

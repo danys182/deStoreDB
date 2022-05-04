@@ -30,7 +30,7 @@ function routerApi(app) {
 	router.use(
 		'/customers',
 		passport.authenticate('jwt', { session: false }),
-		restrictTo(['customer']),
+		restrictTo(['customer', 'admin']),
 		customerRouter
 	);
 	router.use(

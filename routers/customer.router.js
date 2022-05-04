@@ -28,6 +28,8 @@ router.get(
 		const { id } = req.params;
 		try {
 			const customer = await service.findByPk(id);
+			delete customer.dataValues.user.dataValues.password;
+			delete customer.dataValues.user.dataValues.recoveryToken;
 			res.json(customer);
 		} catch (error) {
 			next(error);

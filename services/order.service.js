@@ -9,20 +9,17 @@ class OrderService {
 		include: [
 			{
 				association: 'customer',
-				attributes: ['id', 'name', 'lastName'],
-				include: ['user'],
+				attributes: ['name', 'lastName'],
+				include: {
+					association: 'user',
+					attributes: ['id', 'email'],
+				},
 			},
 			{
 				association: 'items',
 				include: {
 					association: 'product',
 					attributes: ['id', 'name'],
-					include: [
-						{
-							association: 'category',
-							attributes: ['id', 'name'],
-						},
-					],
 				},
 			},
 		],
@@ -32,8 +29,8 @@ class OrderService {
 		return await OrderModel.findAll(this.#defaultOptions);
 	}
 
-	async findByPk(id, options = null) {
-		const order = await OrderModel.findByPk(id, options);
+	async findByPk(id) {
+		const order = await OrderModel.findByPk(id);
 		if (!order) {
 			throw boom.notFound('Order not found');
 		}
@@ -45,26 +42,7 @@ class OrderService {
 			where: {
 				'$customer.user.id$': userId,
 			},
-
-			attributes: ['id', 'total'],
-
-			include: [
-				{
-					association: 'customer',
-					attributes: ['name', 'lastName'],
-					include: {
-						association: 'user',
-						attributes: ['id', 'email'],
-					},
-				},
-				{
-					association: 'items',
-					include: {
-						association: 'product',
-						attributes: ['id', 'name'],
-					},
-				},
-			],
+			...this.#defaultOptions,
 		});
 		if (!order) {
 			throw boom.notFound('Order not found');
@@ -77,14 +55,12 @@ class OrderService {
 	}
 
 	async create(data) {
-		await serviceCustomer.findByPk(data.customer_id);
 		const order = await OrderModel.create(data);
-		return this.findByPk(order.id, this.#defaultOptions);
+		return this.findByPk(order.id);
 	}
 
 	async update(id, changes) {
-		await serviceCustomer.findByPk(changes.customer_id);
-		const order = await this.findByPk(id, options);
+		const order = await this.findByPk(id);
 		await order.update(changes);
 		return order;
 	}

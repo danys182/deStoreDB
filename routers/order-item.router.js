@@ -8,6 +8,9 @@ const {
 	getOrderItemSchema,
 } = require('../schemas/order-item.schema');
 
+const ProductService = require('../services/product.service');
+const serviceProduct = new ProductService();
+
 const OrderItemService = require('../services/order-item.service');
 const service = new OrderItemService();
 

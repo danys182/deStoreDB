@@ -3,7 +3,7 @@ const boom = require('@hapi/boom');
 function restrictTo(roles) {
 	return (req, res, next) => {
 		const userRole = req.user?.role;
-		console.log(userRole, roles);
+
 		const hasRole = roles.includes(userRole);
 		if (hasRole) return next();
 
