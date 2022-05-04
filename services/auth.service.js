@@ -40,6 +40,9 @@ class AuthService {
 			expiresIn: '15min',
 		});
 		const link = `http://frontend.com/token/${token}`;
+
+		await user.update({ recovery_token: token });
+
 		const info = {
 			from: `deStore" <${config.emailUser}>`,
 			to: `${user.email}`,
